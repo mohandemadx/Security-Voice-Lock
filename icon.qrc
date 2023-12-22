@@ -1,0 +1,6 @@
+<RCC>
+  <qresource prefix="newPrefix">
+    <file>icons/fingerprint.png</file>
+    <file>icons/mic-svgrepo-com.png</file>
+  </qresource>
+</RCC>
