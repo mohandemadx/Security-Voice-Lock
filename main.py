@@ -4,7 +4,10 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import matplotlib.pyplot as plt
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtGui import QIcon
+
+import pandas as pd
 import speech_recognition as sr
+import numpy as np
 
 # CLASSES
 from Audio import AudioRecorder
@@ -23,6 +26,7 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
         
         self.access_keys = ["open middle door", "unlock the gate", "grant me access"]
         self.access_keys_flag = False
+        self.threshold = 0.5
         
         self.fingerprints = []
         self.ui.recordButton.clicked.connect(self.record_audio) 
@@ -52,6 +56,10 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
 
     def process_audio(self):
         f.show_spectrogram(audio_data=self.recorder.data ,sample_rate=self.recorder.sample_rate, canvas=self.canvas)
+        self.fingerprints = f.calculate_fingerprint(self.recorder.data)+['open']
+        
+        # Append DataFrame to a CSV file
+        f.append_row_to_csv('training_data.csv', self.fingerprints)
         
     def person_access(self):
         pass
@@ -64,8 +72,11 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
         # Voice Code Mode
         else:
             self.comboBox.setEnabled(False)
-            
+           
+    
         
+    
+    
     
 
     
