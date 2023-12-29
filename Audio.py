@@ -1,4 +1,5 @@
 import wave
+import librosa
 import soundfile as sf
 import pyaudio
 import threading
@@ -9,6 +10,8 @@ class AudioRecorder:
         self.sample_rate = sample_rate
         self.file_name = file_name
         self.frames = []
+        self.data = None
+        self.sr = None
 
     def start_recording(self):
         recording_thread = threading.Thread(target=self.record_audio)
@@ -54,6 +57,10 @@ class AudioRecorder:
         print(f"Audio saved as {self.file_name}")
 
     def get_audio_data(self):
-        # Load the audio file using soundfile
-        data, _ = sf.read(self.file_name, dtype='float32')
-        return data
+        try:
+            # Load the audio file using librosa
+            data, sr = librosa.load(self.file_name)
+            return data, sr
+        except Exception as e:
+            print(f"Error loading audio file: {e}")
+            return None, None

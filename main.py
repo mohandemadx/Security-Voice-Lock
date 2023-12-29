@@ -50,14 +50,14 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
 
     def record_audio(self):
         self.recorder.record_audio(label=self.ui.recordingLabel)
-        self.recorder.data = self.recorder.get_audio_data()
+        self.recorder.data, self.recorder.sr = self.recorder.get_audio_data()
         self.process_audio()
 
 
     def process_audio(self):
         f.show_spectrogram(audio_data=self.recorder.data ,sample_rate=self.recorder.sample_rate, canvas=self.canvas)
-        self.fingerprints = f.calculate_fingerprint(self.recorder.data)+['open']
         
+        self.fingerprints = f.calculate_fingerprint(self.recorder.data, self.recorder.sr)
         # Append DataFrame to a CSV file
         f.append_row_to_csv('training_data.csv', self.fingerprints)
         
