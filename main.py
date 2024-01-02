@@ -47,20 +47,28 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
         # Create instances of AudioRecorder for recording audio
         self.recorder = AudioRecorder(file_name='recorded_audio.wav')
 
-
     def record_audio(self):
-        self.recorder.record_audio(label=self.ui.recordingLabel)
-        self.recorder.data, self.recorder.sr = self.recorder.get_audio_data()
-        self.process_audio()
-
+        try:
+            self.recorder.record_audio(label=self.recordingLabel)
+            self.recorder.get_audio_data()
+            self.process_audio()
+        except Exception as e:
+            # Handle the exception, you can print an error message or log it
+            print(f"Error in record_audio: {e}")
 
     def process_audio(self):
-        f.show_spectrogram(audio_data=self.recorder.data ,sample_rate=self.recorder.sample_rate, canvas=self.canvas)
-        
-        self.fingerprints = f.calculate_fingerprint(self.recorder.data, self.recorder.sr)
-        # Append DataFrame to a CSV file
-        f.append_row_to_csv('training_data.csv', self.fingerprints)
-        
+        try:
+            f.show_spectrogram(audio_data=self.recorder.data, sample_rate=self.recorder.sample_rate, canvas=self.canvas)
+
+            self.fingerprints = self.recorder.calculate_fingerprint()
+
+            # Append DataFrame to a CSV file
+            f.append_row_to_csv('training_data.csv', np.concatenate([self.fingerprints, ["Open The Door","Habiba"]]))
+
+        except Exception as e:
+            # Handle the exception, you can print an error message or log it
+            print(f"Error in process_audio: {e}")
+
     def person_access(self):
         pass
 
