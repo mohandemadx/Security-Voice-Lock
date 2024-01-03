@@ -87,6 +87,7 @@ class AudioRecorder:
                 # Combine all features into a single fingerprint
                 fingerprint = np.concatenate([np.angle(mean_chroma), np.abs(mean_chroma), std_mfcc, zero_crossings.flatten(), energy])
                 print(fingerprint.shape)
+                # (12,) (12,) (20,) (130,) (130,) (304,)
                 
                 return fingerprint
             else:
@@ -94,13 +95,5 @@ class AudioRecorder:
 
         except Exception as e:
             print(f"Error calculating fingerprint: {e}")
-
-            # # Calculate statistical descriptors
-            
-            # std_mfcc = np.std(mfcc, axis=1)
-            # print(mean_chroma.shape(), std_mfcc.shape(), zero_crossings.shape(), energy.shape())
-            # # Combine all features into a single fingerprint
-            # fingerprint = np.concatenate([mean_chroma, std_mfcc, zero_crossingsflatten(), energy])
-
 
         
