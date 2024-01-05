@@ -5,7 +5,9 @@ import matplotlib.pyplot as plt
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtGui import QIcon
 
+
 import pandas as pd
+import joblib
 import speech_recognition as sr
 import numpy as np
 
@@ -17,6 +19,7 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
     def __init__(self):
         super().__init__()
         self.init_ui()
+        self.model = joblib.load('svm_model.pkl')
 
 
     def init_ui(self):
@@ -24,8 +27,9 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
         self.setWindowTitle("Security Voice-code Access")
         self.setWindowIcon(QIcon("icons/fingerprint.png"))
         
-        self.access_keys = ["open middle door", "unlock the gate", "grant me access"]
+        self.access_keys = ["Open middle door", "Unlock the gate", "Grant me access"]
         self.access_keys_flag = False
+        self.individuals = ["Person1", "Person2", "Person3", "Person4", "Person5", "Person6", "Person7", "Person8"]
         self.threshold = 0.5
         
         self.fingerprints = []
@@ -45,12 +49,18 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
         f.addwidget(self.canvas, self.ui.spectoFrame)
 
         # Create instances of AudioRecorder for recording audio
-        self.recorder = AudioRecorder(file_name='recorded_audio.wav')
+        self.recorder = AudioRecorder(file_name='open_middle_door.wav')
 
     def record_audio(self):
         try:
             self.recorder.record_audio(label=self.recordingLabel)
-            self.recorder.get_audio_data()
+            # spectogram = self.recorder.get_audio_data('recorder_audio.wav')
+            # word = self.recorder.detect_word(spectogram)
+            # if word in self.access_keys:
+            #     self.ui.resultLabel.setText("ACCESS GAINED")
+            # else:
+            #     self.ui.resultLabel.setText("ACCESS DENIED")
+
             self.process_audio()
         except Exception as e:
             # Handle the exception, you can print an error message or log it
@@ -63,7 +73,18 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
             self.fingerprints = self.recorder.calculate_fingerprint()
 
             # Append DataFrame to a CSV file
-            f.append_row_to_csv('training_data.csv', np.concatenate([self.fingerprints, ["Open The Door","Habiba"]]))
+            f.append_row_to_csv('new_training_data.csv', self.fingerprints)
+            # data = pd.DataFrame([self.fingerprints])
+            # data=pd.DataFrame([habiba])
+
+            # Use the loaded model to make predictions
+            # predictions = self.model.predict(data)
+            # if predictions[0].lower() in self.access_keys:
+            #     self.resultLabel.setText('Access Granted')
+
+
+            # Process the predictions as needed
+            # print("Predictions:", predictions)
 
         except Exception as e:
             # Handle the exception, you can print an error message or log it
