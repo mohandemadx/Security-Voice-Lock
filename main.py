@@ -4,6 +4,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import matplotlib.pyplot as plt
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtGui import QIcon
+import joblib
 
 
 import numpy as np
@@ -27,9 +28,8 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
         self.access_keys = ["Open middle door", "Unlock the gate", "Grant me access"]
         self.access_keys_flag = False
         self.individuals = ["Person1", "Person2", "Person3", "Person4", "Person5", "Person6", "Person7", "Person8"]
-        self.threshold = 0.5
         
-        self.fingerprints = []
+        self.audio_data = None
         self.ui.recordButton.clicked.connect(self.record_audio) 
         self.load_ui_elements()
 
@@ -50,43 +50,19 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
 
     def record_audio(self):
         try:
-            self.recorder.record_audio(label=self.recordingLabel)
-            # spectogram = self.recorder.get_audio_data('recorder_audio.wav')
-            # word = self.recorder.detect_word(spectogram)
-            # if word in self.access_keys:
-            #     self.ui.resultLabel.setText("ACCESS GAINED")
-            # else:
-            #     self.ui.resultLabel.setText("ACCESS DENIED")
-
+            self.recorder.record_audio(label=self.ui.recordingLabel)
+            self.audio_data, self.sr, self.spectogram, self.mfccs = f.get_audio_data(self.recorder.file_name)
             self.process_audio()
+            
         except Exception as e:
             # Handle the exception, you can print an error message or log it
             print(f"Error in record_audio: {e}")
 
     def process_audio(self):
-        try:
-            f.show_spectrogram(audio_data=self.recorder.data, sample_rate=self.recorder.sample_rate, canvas=self.canvas)
-
-            self.fingerprints = self.recorder.calculate_fingerprint()
-
-            # Append DataFrame to a CSV file
-            f.append_row_to_csv('new_training_data.csv', self.fingerprints)
+        f.show_spectrogram(audio_data=self.audio_data, sample_rate=self.recorder.sample_rate, canvas=self.canvas)
+        f.detect_word(self.spectogram, self.mfccs)
+        
             
-            # data = pd.DataFrame([self.fingerprints])
-            # data=pd.DataFrame([habiba])
-
-            # Use the loaded model to make predictions
-            # predictions = self.model.predict(data)
-            # if predictions[0].lower() in self.access_keys:
-            #     self.resultLabel.setText('Access Granted')
-
-
-            # Process the predictions as needed
-            # print("Predictions:", predictions)
-
-        except Exception as e:
-            # Handle the exception, you can print an error message or log it
-            print(f"Error in process_audio: {e}")
 
     def person_access(self):
         pass

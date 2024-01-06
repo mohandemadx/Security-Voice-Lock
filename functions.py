@@ -2,6 +2,7 @@ import librosa
 import matplotlib.pyplot as plt
 import numpy as np
 import csv
+from sklearn.metrics.pairwise import cosine_similarity
 
 def clear(frame):
     layout = frame.layout()
@@ -44,7 +45,58 @@ def append_row_to_csv(file_path, new_row):
     except Exception as e:
         print(f"Error: {e}")
 
+def get_audio_data(file_name, num_mfcc=13, hop_length = 512, n_fft = 2048):
+        # Read the audio file using soundfile
+        data, sr = librosa.load(file_name, dtype=np.float32)
+        spectogram = np.abs(librosa.stft(y=data, hop_length=hop_length, n_fft=n_fft))
+        mfccs = librosa.feature.mfcc(y=data, sr=sr, n_mfcc=num_mfcc)
+        return data, sr, spectogram, mfccs
 
+    
+def detect_word(spectogram, mfccs):
+        _, _, specto1, mfcc1 = get_audio_data('sentence_audio/open_middle_door.wav')
+        _, _, specto2, mfcc2 = get_audio_data('sentence_audio/grant_me_access.wav')
+        _, _, specto3, mfcc3 = get_audio_data('sentence_audio/unlock_the_gate.wav')
+        word_dictionary = {
+            'open_middle_door': [specto1, mfcc1],
+            'grant_me_access': [specto2, mfcc2],
+            'unlock_the_gate': [specto3, mfcc3],
+        }
+        print(specto1.shape, spectogram.shape)
+        
+        sim_open_spec = calc_similarity(word_dictionary['open_middle_door'][0], spectogram)
+        sim_grant_spec = calc_similarity(word_dictionary['grant_me_access'][0], spectogram)
+        sim_unlock_spec = calc_similarity(word_dictionary['unlock_the_gate'][0], spectogram)
+        print(f"Similarity SPECTO:{[sim_open_spec, sim_grant_spec, sim_unlock_spec]}")
+        
+        sim_open_mfcc = calc_similarity(word_dictionary['open_middle_door'][1], mfccs)
+        sim_grant_mfcc = calc_similarity(word_dictionary['grant_me_access'][1], mfccs)
+        sim_unlock_mfcc = calc_similarity(word_dictionary['unlock_the_gate'][1], mfccs)
+        print(f"Similarity MFCCs:{[sim_open_mfcc, sim_grant_mfcc, sim_unlock_mfcc]}")
+
+        max_variable1, max_value1 = max((("Open middle door", sim_open_spec), ("Grant me access", sim_grant_spec), ("Unlock the gate", sim_unlock_spec)), key=lambda x: x[1])
+        print(f"Output of SPECTO: {max_variable1, max_value1}")
+        
+        max_variable2, max_value2 = max((("Open middle door", sim_open_mfcc), ("Grant me access", sim_grant_mfcc), ("Unlock the gate", sim_unlock_mfcc)), key=lambda x: x[1])
+        print(f"Output of MFCCs: {max_variable2, max_value2}")
+        
+        # habiba lma tft7yy zbty l voices bsotek w i recommend enk t3mleehom phases mo5tlfa y3ny wa7da fehom mt't3a 
+        # w wa7da takleha kda w wa7da tbd'y 3ltool w zbty b'a l thresholds o3ody el3by bl keywords w 4ofy l terminal
+        # trail and error b'a w rbna m3aaky
+        
+        # if max_variable1 == "Open middle door":
+        #     THRES = 0.38
+        # else:
+        #     sentence = max_variable1
+        #     SURE = 80
+            
+        # if SURE == 100:
+        #     return sentence, SURE
+        # elif SURE == 80:
+        #     return sentence, 
+        # else:
+        #     return 'no match'
+        
 def calc_similarity(spec1, spec2):
     spec1_flat = spec1.flatten()
     spec2_flat = spec2.flatten()
