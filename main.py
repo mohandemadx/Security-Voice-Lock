@@ -71,6 +71,7 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
 
             # Append DataFrame to a CSV file
             f.append_row_to_csv('new_training_data.csv', self.fingerprints)
+            
             # data = pd.DataFrame([self.fingerprints])
             # data=pd.DataFrame([habiba])
 
