@@ -5,8 +5,6 @@ import matplotlib.pyplot as plt
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtGui import QIcon
 
-import pandas as pd
-import speech_recognition as sr
 import numpy as np
 
 # CLASSES

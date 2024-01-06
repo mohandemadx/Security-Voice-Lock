@@ -1,18 +1,28 @@
+import librosa
+import numpy as np
+import matplotlib.pyplot as plt
 
-import pandas as pd
+def extract_voice_fingerprint(file_path, num_mfcc=13):
+    # Load audio file
+    audio, sr = librosa.load(file_path)
 
-# Create a sample DataFrame
-data = {'Column1': [1, 2, 3, 4, None],
-        'Column2': [5, 6, None, 8, 9]}
-df = pd.DataFrame(data)
+    # Extract MFCCs
+    mfccs = librosa.feature.mfcc(y=audio, sr=sr, n_mfcc=num_mfcc)
+    print(mfccs.shape)
 
-# Display the original DataFrame
-print("Original DataFrame:")
-print(df)
+    return mfccs
 
-# Remove rows with NaN values
-df_cleaned = df.dropna()
+def plot_voice_fingerprint(mfccs):
+    # Display the voice fingerprint as an image
+    plt.figure(figsize=(10, 4))
+    librosa.display.specshow(mfccs, x_axis='time')
+    plt.colorbar()
+    plt.title('MFCCs (Mel-Frequency Cepstral Coefficients)')
+    plt.xlabel('Time')
+    plt.ylabel('MFCC Coefficients')
+    plt.show()
 
-# Display the DataFrame after removing rows with NaN values
-print("\nDataFrame after removing rows with NaN values:")
-print(df_cleaned)
+# Example usage
+file_path = 'recorded_audio.wav'
+voice_fingerprint = extract_voice_fingerprint(file_path)
+plot_voice_fingerprint(voice_fingerprint)
