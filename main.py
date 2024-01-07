@@ -4,9 +4,11 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import matplotlib.pyplot as plt
 from PyQt5 import QtWidgets, uic
 from PyQt5.QtGui import QIcon
+
+
+import pandas as pd
 import joblib
-
-
+import speech_recognition as sr
 import numpy as np
 
 # CLASSES
@@ -28,8 +30,9 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
         self.access_keys = ["Open middle door", "Unlock the gate", "Grant me access"]
         self.access_keys_flag = False
         self.individuals = ["Person1", "Person2", "Person3", "Person4", "Person5", "Person6", "Person7", "Person8"]
+        self.threshold = 0.5
         
-        self.audio_data = None
+        self.fingerprints = []
         self.ui.recordButton.clicked.connect(self.record_audio) 
         self.load_ui_elements()
 
@@ -46,23 +49,32 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
         f.addwidget(self.canvas, self.ui.spectoFrame)
 
         # Create instances of AudioRecorder for recording audio
-        self.recorder = AudioRecorder(file_name='open_middle_door.wav')
+        self.recorder = AudioRecorder(file_name='recorded_audio.wav')
 
     def record_audio(self):
         try:
-            self.recorder.record_audio(label=self.ui.recordingLabel)
-            self.audio_data, self.sr, self.spectogram, self.mfccs = f.get_audio_data(self.recorder.file_name)
+            self.recorder.record_audio(label=self.recordingLabel)
+            self.audio_data, self.sr, self.spectrogram, self.mfccs= self.recorder.get_audio_data('recorded_audio.wav')
+            word = self.recorder.detect_word(self.spectrogram,self.mfccs)
+            print(word)
+            if word in self.access_keys:
+                self.ui.resultLabel.setText("ACCESS GAINED")
+            else:
+                self.ui.resultLabel.setText("ACCESS DENIED")
+
             self.process_audio()
-            
         except Exception as e:
             # Handle the exception, you can print an error message or log it
             print(f"Error in record_audio: {e}")
 
     def process_audio(self):
-        f.show_spectrogram(audio_data=self.audio_data, sample_rate=self.recorder.sample_rate, canvas=self.canvas)
-        f.detect_word(self.spectogram, self.mfccs)
-        
-            
+        try:
+            f.show_spectrogram(audio_data=self.recorder.data, sample_rate=self.recorder.sample_rate, canvas=self.canvas)
+
+
+        except Exception as e:
+            # Handle the exception, you can print an error message or log it
+            print(f"Error in process_audio: {e}")
 
     def person_access(self):
         pass
