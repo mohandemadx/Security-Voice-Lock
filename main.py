@@ -71,7 +71,7 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
             f.show_spectrogram(audio_data=self.recorder.data, sample_rate=self.recorder.sample_rate, canvas=self.canvas)
             
             # Individual Prediction
-            c, p_ind, p_nam_ind = aT.file_classification('recorded_audio.wav', "svm_model", "svm_rbf")
+            c_ind, p_ind, p_nam_ind = aT.file_classification('recorded_audio.wav', "svm_model", "svm_rbf")
             print(f'P({p_nam_ind[0]}={p_ind[0]})')
             print(f'P({p_nam_ind[1]}={p_ind[1]})')
             print(f'P({p_nam_ind[2]}={p_ind[2]})')
@@ -107,9 +107,9 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
     def person_access(self, word, individual):
         if word != "Can't Recogonize your sentence":
             if individual != "Other":
-                self.ui.resultLabel.setText("ACCESS DENIED")
-            else:
                 self.ui.resultLabel.setText(f"Hi {individual}")
+            else:
+                self.ui.resultLabel.setText("ACCESS DENIED")
         else:
             self.ui.resultLabel.setText("ACCESS DENIED")
 

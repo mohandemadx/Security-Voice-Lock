@@ -75,46 +75,4 @@ class AudioRecorder:
             # Handle the exception, you can print an error message or log it
             print(f"Error here: {e}")
 
-    def calculate_fingerprint(self):
-        try:
-            if self.data is not None:
-                stft = librosa.stft(y=self.data)
-
-                # Calculate chroma features
-                chroma = librosa.feature.chroma_stft(S=stft)
-                # Mean Chroma
-                mean_chroma = np.mean(chroma, axis=1)
-
-                # Calculate zero-crossing rate (applied to the time-domain signal)
-                zero_crossings = librosa.feature.zero_crossing_rate(self.data)
-
-                
-                # Calculate Mel-Frequency Cepstral Coefficients (MFCCs)
-                mfcc = librosa.feature.mfcc(y=self.data,sr=self.sr,n_mfcc=40).flatten()
-                delta = librosa.feature.delta(mfcc).flatten()
-                delta2 = librosa.feature.delta(mfcc,order=2).flatten()
-                feature_vector = np.concatenate([mfcc,delta,delta2])
-
-                # Transpose the feature vector to have frames as columns
-                fingerprint = feature_vector
-
-
-                # Calculate energy envelope
-                # energy = np.sum(np.abs(stft), axis=0)
-
-                # print(np.angle(mean_chroma).shape, np.abs(mean_chroma).shape, std_mfcc.shape, zero_crossings.flatten().shape, energy.shape)
-                
-                # Combine all features into a single fingerprint
-                # fingerprint = np.concatenate([mfcc, delta, delta2])
-                print(fingerprint.shape)
-                # (12,) (12,) (20,) (130,) (130,) (304,)
-                
-                return fingerprint
-            else:
-                print("Audio data is None. Please call get_audio_data() first.")
-
-        except Exception as e:
-            print(f"Error calculating fingerprint: {e}")
-
-
-
+    

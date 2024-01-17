@@ -32,31 +32,5 @@ def show_spectrogram(audio_data, sample_rate, canvas):
     canvas.figure = plt.gcf()
     canvas.draw()
 
-def append_row_to_csv(file_path, new_row):
-    try:
-        # Open the CSV file in append mode
-        with open(file_path, 'a', newline='') as file:
-            writer = csv.writer(file)
-
-            # Write the new row to the CSV file
-            writer.writerow(new_row)
-
-        print("Row appended to CSV successfully.")
-    except Exception as e:
-        print(f"Error: {e}")
-
-def calc_similarity(spec1, spec2):
-
-    spec1_flat = spec1.flatten()
-    spec2_flat = spec2.flatten()
-
-    # Calculate dynamic time warping distance
-    _, path = fastdtw(spec1_flat, spec2_flat)
-
-    # Calculate similarity based on the path length
-    path_length = len(path)
-    max_length = max(len(spec1_flat), len(spec2_flat))
-    similarity=((2*max_length)-path_length)/(2*max_length)
-    return similarity
 
 
