@@ -32,7 +32,6 @@ def show_spectrogram(audio_data, sample_rate, canvas):
     canvas.figure = plt.gcf()
     canvas.draw()
 
-    
 def append_row_to_csv(file_path, new_row):
     try:
         # Open the CSV file in append mode
@@ -45,7 +44,6 @@ def append_row_to_csv(file_path, new_row):
         print("Row appended to CSV successfully.")
     except Exception as e:
         print(f"Error: {e}")
-
 
 def calc_similarity(spec1, spec2):
 

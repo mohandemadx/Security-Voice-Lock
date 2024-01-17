@@ -67,7 +67,7 @@ class AudioRecorder:
         # Read the audio file using soundfile
         try:
             self.data, self.sr = librosa.load(file_name, dtype=np.float32)
-            mfcc = librosa.feature.mfcc(y=self.data, sr=self.sr, n_mfcc=13)
+            mfcc = librosa.feature.mfcc(y=self.data, sr=self.sr, n_mfcc=60)
             spectogram = np.abs(librosa.stft(y=self.data))
             return self.data, self.sr, spectogram, mfcc
 
@@ -116,30 +116,5 @@ class AudioRecorder:
         except Exception as e:
             print(f"Error calculating fingerprint: {e}")
 
-    def detect_word(self, spectogram,mfccs):
-        _, _, specto1, mfcc1 =self.get_audio_data('open_middle_door.wav')
-        _, _, specto2, mfcc2 =self.get_audio_data('grant_me_access.wav')
-        _, _, specto3, mfcc3 =self.get_audio_data('unlock_the_gate.wav')
-        word_dictionary = {
-            'open_middle_door': [specto1, mfcc1],
-            'grant_me_access': [specto2, mfcc2],
-            'unlock_the_gate': [specto3, mfcc3],
-        }
-
-
-        sim_open_mfcc = f.calc_similarity(word_dictionary['open_middle_door'][1], mfccs)
-        sim_grant_mfcc = f.calc_similarity(word_dictionary['grant_me_access'][1], mfccs)
-        sim_unlock_mfcc = f.calc_similarity(word_dictionary['unlock_the_gate'][1], mfccs)
-        print(f"Similarity MFCCs:{[sim_open_mfcc, sim_grant_mfcc, sim_unlock_mfcc]}")
-
-
-        max_variable2, max_value2 = max((("Open middle door", sim_open_mfcc), ("Grant me access", sim_grant_mfcc),
-                                         ("Unlock the gate", sim_unlock_mfcc)), key=lambda x: x[1])
-        print(f"Output of MFCCs: {max_variable2, max_value2}")
-
-        if max_value2<=0.2 or max_value2>0.26:
-            max_variable2='no match'
-
-        return max_variable2
 
 
