@@ -75,6 +75,7 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
             print(f'P({p_nam_ind[0]}={p_ind[0]})')
             print(f'P({p_nam_ind[1]}={p_ind[1]})')
             print(f'P({p_nam_ind[2]}={p_ind[2]})')
+            print(f'P({p_nam_ind[3]}={p_ind[3]})')
             
             # Word Prediction
             c_word, p_word, p_nam_word = aT.file_classification('recorded_audio.wav', "svm_model_words", "svm_rbf")
@@ -85,7 +86,7 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
             max_variable_word, max_value_word = max((("Open middle door", p_word[0]), ("Grant me access", p_word[1]),
                                          ("Unlock the gate", p_word[2])), key=lambda x: x[1])
             max_variable_ind, max_value_ind = max((("Habiba", p_ind[0]), ("Carole", p_ind[1]),
-                                         ("Rana", p_ind[2])), key=lambda x: x[1])
+                                         ("Rana", p_ind[2]), ("Mohand", p_ind[3])), key=lambda x: x[1])
             
             
             if max_value_word > 0.9:
