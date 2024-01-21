@@ -1,19 +1,16 @@
 import sys
+import threading
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import matplotlib.pyplot as plt
-from PyQt5 import QtWidgets, uic
+from PyQt5 import uic
 from PyQt5.QtGui import QIcon
-from pyAudioAnalysis import audioTrainTest as aT
-import os
-import pandas as pd
-import joblib
-import numpy as np
+
 
 # CLASSES
-from Audio import AudioRecorder
+from Audio import AudioRecorder, RecordThread
 import functions as f
-
+    
 class SecurityVoiceCodeAccessApp(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -27,11 +24,10 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
         
         self.access_keys = ["Open middle door", "Unlock the gate", "Grant me access"]
         self.access_keys_flag = False
-        self.individuals = ["Person1", "Person2", "Person3", "Person4", "Person5", "Person6", "Person7", "Person8"]
-        self.threshold = 0.5
+        self.individuals = ["Habiba", "Mohand", "Carol", "Rana", "Person5", "Person6", "Person7", "Person8"]
         
-        self.fingerprints = []
-        self.ui.recordButton.clicked.connect(self.record_audio) 
+        
+        self.ui.recordButton.clicked.connect(self.record_audio)
         self.mode = None
         self.load_ui_elements()
 
@@ -41,6 +37,8 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
         self.ui.radioButton_2.clicked.connect(self.change_mode)
         self.ui.radioButton.clicked.connect(self.change_mode)
         self.recordButton.setIcon(QIcon('icons\mic-svgrepo-com.png'))
+        self.ui.accessLabel.setIcon(QIcon('icons/unlock.png'))
+        
         # Create instances of MplWidget for spectrogram
         self.canvas = FigureCanvas(plt.Figure())
 
@@ -49,61 +47,40 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
 
         # Create instances of AudioRecorder for recording audio
         self.recorder = AudioRecorder(file_name='recorded_audio.wav')
-
+        self.audio_thread = RecordThread(self.recorder)
+        
+        
     def record_audio(self):
+        self.ui.recordingLabel.setText("Recording...")
+        # Disconnect the slot if it was previously connected
         try:
-            self.recorder.record_audio(label=self.recordingLabel)
-            self.audio_data, self.sr, self.spectrogram, self.mfccs= self.recorder.get_audio_data('recorded_audio.wav')
-            word, ind = self.process_audio()
+            self.audio_thread.finished.disconnect(self.on_finished)
+        except TypeError:
+            # Ignore the error if the slot was not connected
+            pass
+        # Connect the slot
+        self.audio_thread.finished.connect(self.on_finished)
+        self.audio_thread.start()
+        
+        
             
-            if self.mode == 1:
-                self.person_access(word, ind)
-            else:
-                self.word_access(word, ind)
-                
-        except Exception as e:
-            # Handle the exception, you can print an error message or log it
-            print(f"Error in record_audio: {e}")
-
-    def process_audio(self):
-        try:
-            # Plot Spectogram
-            f.show_spectrogram(audio_data=self.recorder.data, sample_rate=self.recorder.sample_rate, canvas=self.canvas)
-            
-            # Individual Prediction
-            c_ind, p_ind, p_nam_ind = aT.file_classification('recorded_audio.wav', "svm_model", "svm_rbf")
-            print(f'P({p_nam_ind[0]}={p_ind[0]})')
-            print(f'P({p_nam_ind[1]}={p_ind[1]})')
-            print(f'P({p_nam_ind[2]}={p_ind[2]})')
-            print(f'P({p_nam_ind[3]}={p_ind[3]})')
-            
-            # Word Prediction
-            c_word, p_word, p_nam_word = aT.file_classification('recorded_audio.wav', "svm_model_words", "svm_rbf")
-            print(f'P({p_nam_word[0]}={p_word[0]})')
-            print(f'P({p_nam_word[1]}={p_word[1]})')
-            print(f'P({p_nam_word[2]}={p_word[2]})')
-            
-            max_variable_word, max_value_word = max((("Open middle door", p_word[0]), ("Grant me access", p_word[1]),
-                                         ("Unlock the gate", p_word[2])), key=lambda x: x[1])
-            max_variable_ind, max_value_ind = max((("Habiba", p_ind[0]), ("Carole", p_ind[1]),
-                                         ("Rana", p_ind[2]), ("Mohand", p_ind[3])), key=lambda x: x[1])
-            
-            
-            if max_value_word > 0.9:
-                word = max_variable_word
-            else:
-                word = "Can't Recogonize your sentence"
-                
-            if max_value_ind > 0.95:
-                ind = max_variable_ind
-            else:
-                ind = "Other"
-            
-            return word, ind
-
-        except Exception as e:
-            # Handle the exception, you can print an error message or log it
-            print(f"Error in process_audio: {e}")
+    def on_finished(self):
+        self.recorder.get_audio_data()
+        self.ui.recordingLabel.setText("Recording Done.")
+        
+        # Plot Spectogram
+        f.show_spectrogram(audio_data=self.recorder.data, sample_rate=self.recorder.sr, canvas=self.canvas)
+        word, ind = self.recorder.process_audio()
+        
+        print("---------------------------------------------------------------")
+        print(f"Your Sentence is most Probably: {word}")
+        print(f"The Person who said the sentence is most Probably: {ind}")
+        
+        if self.mode == 1:
+            self.person_access(word, ind)
+        else:
+            self.word_access(word, ind)
+        
 
     def person_access(self, word, individual):
         if word != "Can't Recogonize your sentence":
@@ -116,6 +93,7 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
 
     def word_access(self, word, individual):
         if word != "Can't Recogonize your sentence":
+            self.ui.accessLabel.setIcon(QIcon('icons/padlock.png'))
             self.ui.resultLabel.setText(f"Hi {individual}")
         else:
             self.ui.resultLabel.setText("ACCESS DENIED")
@@ -130,6 +108,7 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
         else:
             self.comboBox.setEnabled(False)
             self.mode = 2
+            
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
