@@ -15,27 +15,45 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="1" column="0" colspan="2" alignment="Qt::AlignHCenter">
-     <widget class="QLabel" name="resultLabel">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
+    <item row="3" column="3" alignment="Qt::AlignLeft">
+     <widget class="QPushButton" name="iconIND">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(255, 255, 255);</string>
       </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="icon.qrc">
+        <normaloff>:/newPrefix/icons/coding.png</normaloff>:/newPrefix/icons/coding.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>50</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="2" alignment="Qt::AlignRight">
+     <widget class="QRadioButton" name="radioButton_2">
       <property name="font">
        <font>
-        <pointsize>30</pointsize>
+        <family>Segoe UI Semibold</family>
+        <pointsize>13</pointsize>
         <weight>75</weight>
         <bold>true</bold>
        </font>
       </property>
       <property name="text">
-       <string>STATUS</string>
+       <string>FINGERPRINT MODE</string>
       </property>
      </widget>
     </item>
-    <item row="2" column="0" colspan="2">
+    <item row="2" column="0" colspan="4" alignment="Qt::AlignHCenter">
      <widget class="QPushButton" name="lockbutton">
       <property name="font">
        <font>
@@ -63,7 +81,7 @@
       </property>
      </widget>
     </item>
-    <item row="7" column="0" colspan="2">
+    <item row="7" column="0" colspan="4">
      <widget class="QFrame" name="frame">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -136,7 +154,7 @@ color: white;</string>
       </layout>
      </widget>
     </item>
-    <item row="4" column="0" colspan="2">
+    <item row="4" column="0" colspan="4">
      <widget class="QFrame" name="frame2">
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
@@ -167,7 +185,11 @@ color: white;</string>
            <number>0</number>
           </property>
           <item>
-           <widget class="QGraphicsView" name="graphicsView"/>
+           <widget class="QGraphicsView" name="graphicsView">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -194,7 +216,11 @@ color: white;</string>
            <number>0</number>
           </property>
           <item>
-           <widget class="QGraphicsView" name="graphicsView_2"/>
+           <widget class="QGraphicsView" name="graphicsView_2">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+           </widget>
           </item>
          </layout>
         </widget>
@@ -202,32 +228,82 @@ color: white;</string>
       </layout>
      </widget>
     </item>
-    <item row="3" column="0" alignment="Qt::AlignHCenter">
+    <item row="3" column="0" alignment="Qt::AlignRight">
      <widget class="QRadioButton" name="radioButton">
       <property name="font">
        <font>
-        <pointsize>10</pointsize>
+        <family>Segoe UI Semibold</family>
+        <pointsize>13</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
        </font>
       </property>
       <property name="text">
-       <string>Voice Code Mode</string>
+       <string>VOICE-CODE MODE</string>
       </property>
       <property name="checked">
        <bool>true</bool>
       </property>
      </widget>
     </item>
-    <item row="3" column="1" alignment="Qt::AlignHCenter">
-     <widget class="QRadioButton" name="radioButton_2">
+    <item row="1" column="0" colspan="4" alignment="Qt::AlignHCenter">
+     <widget class="QLabel" name="resultLabel">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
       <property name="font">
        <font>
-        <pointsize>10</pointsize>
+        <pointsize>30</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
        </font>
       </property>
       <property name="text">
-       <string>Voice Finger Print Mode</string>
+       <string>STATUS</string>
       </property>
      </widget>
+    </item>
+    <item row="3" column="1" alignment="Qt::AlignLeft">
+     <widget class="QPushButton" name="iconWORD">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(255, 255, 255);</string>
+      </property>
+      <property name="text">
+       <string/>
+      </property>
+      <property name="icon">
+       <iconset resource="icon.qrc">
+        <normaloff>:/newPrefix/icons/promo.png</normaloff>:/newPrefix/icons/promo.png</iconset>
+      </property>
+      <property name="iconSize">
+       <size>
+        <width>50</width>
+        <height>50</height>
+       </size>
+      </property>
+      <property name="flat">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0" colspan="4">
+     <spacer name="verticalSpacer">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <property name="sizeType">
+       <enum>QSizePolicy::Fixed</enum>
+      </property>
+      <property name="sizeHint" stdset="0">
+       <size>
+        <width>20</width>
+        <height>20</height>
+       </size>
+      </property>
+     </spacer>
     </item>
    </layout>
   </widget>

@@ -35,8 +35,10 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
         self.ui.resultLabel.setText("ACCESS DENIED")
         self.ui.radioButton_2.clicked.connect(self.change_mode)
         self.ui.radioButton.clicked.connect(self.change_mode)
-        self.recordButton.setIcon(QIcon('icons\mic-svgrepo-com.png'))
-        self.lockbutton.setIcon(QIcon('icons/unlock.png'))
+        self.ui.recordButton.setIcon(QIcon('icons\mic-svgrepo-com.png'))
+        self.ui.lockbutton.setIcon(QIcon('icons/unlock.png'))
+        self.ui.iconWORD.setIcon(QIcon('icons/promo.png'))
+        self.ui.iconIND.setIcon(QIcon('icons/coding.png'))
         
         # Create instances of AudioRecorder for recording audio
         self.recorder = AudioRecorder(file_name='recorded_audio.wav')
@@ -45,7 +47,8 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
         
     def record_audio(self):
         self.ui.recordingLabel.setText("Recording...")
-        self.ui.recordButton.setIcon(QIcon('icons/recording2.png'))
+        self.ui.recordButton.setIcon(QIcon('icons/recording3.png'))
+        self.ui.recordButton.setStyleSheet("border-radius: 40px; background-color: red; color: white;")
         
         # Disconnect the slot if it was previously connected
         try:
@@ -61,6 +64,7 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
             
     def on_finished(self):
         self.ui.recordButton.setIcon(QIcon('icons/mic-svgrepo-com.png'))
+        self.ui.recordButton.setStyleSheet("border-radius: 40px; background-color: black; color: white;")
         self.recorder.get_audio_data()
         self.ui.recordingLabel.setText("Recording Done.")
         
