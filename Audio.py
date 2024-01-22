@@ -17,7 +17,7 @@ class AudioRecorder:
         self.data = None
         self.sr = None
         self.threshold_words = 0.9
-        self.threshold_ind = 0.7
+        self.threshold_ind = 0.5
 
     def start_recording(self):
         recording_thread = threading.Thread(target=self.record_audio)
@@ -84,6 +84,13 @@ class AudioRecorder:
         max_variable_ind, max_value_ind = max((("Habiba", p_ind[0]), ("Carole", p_ind[1]),
                                         ("Rana", p_ind[2]), ("Mohand", p_ind[3])), key=lambda x: x[1])
         
+        data = [["Habiba", f'{p_ind[0]*100:.2f} %'],
+                ["Carole", f'{p_ind[1]*100:.2f} %'],
+                ["Rana", f'{p_ind[2]*100:.2f} %'],
+                ["Mohand", f'{p_ind[3]*100:.2f} %'],
+                ["Open middle door", f'{p_word[0]*100:.2f} %'],
+                ["Grant me access", f'{p_word[1]*100:.2f} %'],
+                ["Unlock the gate", f'{p_word[2]*100:.2f} %']]
         
         if max_value_word > self.threshold_words:
             word = max_variable_word
@@ -95,7 +102,7 @@ class AudioRecorder:
         else:
             ind = "Other"
         
-        return word, ind
+        return word, ind, data
 
 
 class RecordThread(QThread):

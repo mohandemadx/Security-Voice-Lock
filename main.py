@@ -1,6 +1,6 @@
 import sys
 import threading
-from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
 import matplotlib.pyplot as plt
 from PyQt5 import uic
@@ -26,7 +26,6 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
         self.access_keys_flag = False
         self.individuals = ["Habiba", "Mohand", "Carol", "Rana", "Person5", "Person6", "Person7", "Person8"]
         
-        
         self.ui.recordButton.clicked.connect(self.record_audio)
         self.mode = None
         self.load_ui_elements()
@@ -37,14 +36,8 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
         self.ui.radioButton_2.clicked.connect(self.change_mode)
         self.ui.radioButton.clicked.connect(self.change_mode)
         self.recordButton.setIcon(QIcon('icons\mic-svgrepo-com.png'))
-        self.ui.accessLabel.setIcon(QIcon('icons/unlock.png'))
+        self.lockbutton.setIcon(QIcon('icons/unlock.png'))
         
-        # Create instances of MplWidget for spectrogram
-        self.canvas = FigureCanvas(plt.Figure())
-
-        # Set up layouts for spectrogram widgets
-        f.addwidget(self.canvas, self.ui.spectoFrame)
-
         # Create instances of AudioRecorder for recording audio
         self.recorder = AudioRecorder(file_name='recorded_audio.wav')
         self.audio_thread = RecordThread(self.recorder)
@@ -52,6 +45,8 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
         
     def record_audio(self):
         self.ui.recordingLabel.setText("Recording...")
+        self.ui.recordButton.setIcon(QIcon('icons/recording2.png'))
+        
         # Disconnect the slot if it was previously connected
         try:
             self.audio_thread.finished.disconnect(self.on_finished)
@@ -65,12 +60,15 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
         
             
     def on_finished(self):
+        self.ui.recordButton.setIcon(QIcon('icons/mic-svgrepo-com.png'))
         self.recorder.get_audio_data()
         self.ui.recordingLabel.setText("Recording Done.")
         
         # Plot Spectogram
-        f.show_spectrogram(audio_data=self.recorder.data, sample_rate=self.recorder.sr, canvas=self.canvas)
-        word, ind = self.recorder.process_audio()
+        f.show_spectrogram(audio_data=self.recorder.data, sample_rate=self.recorder.sr, frame=self.ui.spectoFrame)
+        word, ind, data = self.recorder.process_audio()
+        
+        f.create_table(data, self.ui.tableFrame)
         
         print("---------------------------------------------------------------")
         print(f"Your Sentence is most Probably: {word}")
@@ -86,27 +84,29 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
         if word != "Can't Recogonize your sentence":
             if individual != "Other":
                 self.ui.resultLabel.setText(f"Hi {individual}")
+                self.ui.lockbutton.setIcon(QIcon('icons/padlock.png'))
             else:
+                self.ui.lockbutton.setIcon(QIcon('icons/unlock.png'))
                 self.ui.resultLabel.setText("ACCESS DENIED")
         else:
             self.ui.resultLabel.setText("ACCESS DENIED")
+            self.ui.lockbutton.setIcon(QIcon('icons/unlock.png'))
 
     def word_access(self, word, individual):
         if word != "Can't Recogonize your sentence":
-            self.ui.accessLabel.setIcon(QIcon('icons/padlock.png'))
             self.ui.resultLabel.setText(f"Hi {individual}")
+            self.ui.lockbutton.setIcon(QIcon('icons/padlock.png'))
         else:
             self.ui.resultLabel.setText("ACCESS DENIED")
+            self.ui.lockbutton.setIcon(QIcon('icons/unlock.png'))
     
     def change_mode(self):
         # Voice Fingerprint Mode
         if self.ui.radioButton_2.isChecked()== True:
-            self.comboBox.setEnabled(True)
             self.mode = 1
         
         # Voice Code Mode
         else:
-            self.comboBox.setEnabled(False)
             self.mode = 2
             
 

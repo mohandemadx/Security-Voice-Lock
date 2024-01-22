@@ -1,5 +1,10 @@
 <RCC>
   <qresource prefix="newPrefix">
+    <file>icons/mic-svgrepo-com.png</file>
+    <file>icons/padlock.png</file>
+    <file>icons/recording.png</file>
+    <file>icons/recording2.png</file>
+    <file>icons/unlock.png</file>
     <file>icons/fingerprint.png</file>
     <file>icons/mic-svgrepo-com.png</file>
   </qresource>
