@@ -10,7 +10,8 @@ from PyQt5.QtGui import QIcon
 # CLASSES
 from Audio import AudioRecorder, RecordThread
 import functions as f
-    
+
+
 class SecurityVoiceCodeAccessApp(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -24,7 +25,7 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
         
         self.access_keys = ["Open middle door", "Unlock the gate", "Grant me access"]
         self.access_keys_flag = False
-        self.individuals = ["Habiba", "Mohand", "Carol", "Rana", "Person5", "Person6", "Person7", "Person8"]
+        self.individuals = ["Habiba", "Mohand", "Carol", "Rana", "Mirna", "Omar", "Person7", "Person8"]
         
         self.ui.recordButton.clicked.connect(self.record_audio)
         self.mode = None
@@ -61,7 +62,6 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
         self.audio_thread.start()
         
         
-            
     def on_finished(self):
         self.ui.recordButton.setIcon(QIcon('icons/mic-svgrepo-com.png'))
         self.ui.recordButton.setStyleSheet("border-radius: 40px; background-color: black; color: white;")
@@ -82,7 +82,7 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
             self.person_access(word, ind)
         else:
             self.word_access(word, ind)
-        
+
 
     def person_access(self, word, individual):
         if word != "Can't Recogonize your sentence":
@@ -96,6 +96,7 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
             self.ui.resultLabel.setText("ACCESS DENIED")
             self.ui.lockbutton.setIcon(QIcon('icons/unlock.png'))
 
+
     def word_access(self, word, individual):
         if word != "Can't Recogonize your sentence":
             self.ui.resultLabel.setText(f"Hi {individual}")
@@ -103,7 +104,8 @@ class SecurityVoiceCodeAccessApp(QMainWindow):
         else:
             self.ui.resultLabel.setText("ACCESS DENIED")
             self.ui.lockbutton.setIcon(QIcon('icons/unlock.png'))
-    
+
+
     def change_mode(self):
         # Voice Fingerprint Mode
         if self.ui.radioButton_2.isChecked()== True:

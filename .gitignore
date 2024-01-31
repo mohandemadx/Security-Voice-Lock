@@ -1,2 +1,4 @@
 # ignore ALL files in ANY directory named temp
 venv/
+data/
+audio_data/
