@@ -21,7 +21,7 @@ Security Voice-code Access is a desktop application designed for secure access c
 - **Access Status Indicator:** Clearly communicates results - "Access gained" or "Access denied."
 
 ## Screenshot
-![screenshot]()
+![screenshot](https://github.com/mohandemadx/Security-Voice-code-Access)
 
 ## Contributors
  <a href="https://github.com/Habiba-Mohsen">
