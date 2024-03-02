@@ -1,4 +1,4 @@
-# Security Voice-code Access
+# Security Voice Lock
 
 ## Overview
 Security Voice-code Access is a desktop application designed for secure access control using voice-code recognition. The software employs fingerprint and spectrogram concepts, offering two operational modes.
